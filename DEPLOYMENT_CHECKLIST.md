@@ -69,6 +69,12 @@ GEMINI_API_KEY=your_gemini_api_key
 API_KEY=your_gemini_api_key
 ```
 
+Important: do not embed secret keys into the frontend bundle. Remove any
+`define` mappings in `vite.config.ts` that inject secret values into the client.
+Keep secrets in server-side functions (the `/api` folder) and set them using
+Vercel Environment Variables or Vercel Secrets. For values that must be public
+in the client, use variables prefixed with `VITE_`.
+
 ### Step 3: Test Local Build
 ```bash
 npm run build
