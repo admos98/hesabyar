@@ -170,6 +170,7 @@ const MenuContent = ({ onEdit, onModalOpen }: { onEdit: (item: SellableItem) => 
     );
 };
 
+const RecipesContent = ({ onEdit, onModalOpen }: { onEdit: (recipe: Recipe) => void, onModalOpen: () => void }) => {
     const [expandedRecipe, setExpandedRecipe] = useState<string | null>(null);
 
     const { data: sellableItems, isLoading: isLoadingSellable } = useQuery<SellableItem[]>({
@@ -278,5 +279,6 @@ const MenuContent = ({ onEdit, onModalOpen }: { onEdit: (item: SellableItem) => 
             )}
         </div>
     );
+};
 
 export default Sales;
