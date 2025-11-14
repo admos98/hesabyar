@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HesabYar (حساب‌یار)</title>
+    <meta name="description" content="سیستم مدیریت مالی، موجودی و فروش شخصی و کسب و کار کوچک" />
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f1f5f9">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f172a">
+    
+    <!-- Persian Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+      /* Modern CSS Reset */
+      *, *::before, *::after { box-sizing: border-box; }
+      * { margin: 0; }
+      html, body { height: 100%; }
+      body {
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        font-family: 'Vazirmatn', sans-serif;
+      }
+      img, picture, video, canvas, svg { display: block; max-width: 100%; }
+      input, button, textarea, select { font: inherit; }
+      p, h1, h2, h3, h4, h5, h6 { overflow-wrap: break-word; }
+      #root { isolation: isolate; height: 100%; }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^18.2.0/",
+    "react": "https://aistudiocdn.com/react@^18.2.0",
+    "recharts": "https://aistudiocdn.com/recharts@^2.12.7",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^18.2.0/",
+    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^6.23.1",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.29.1",
+    "@tanstack/react-query": "https://aistudiocdn.com/@tanstack/react-query@^5.45.1",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.395.0",
+    "react-dropzone": "https://aistudiocdn.com/react-dropzone@^14.2.3",
+    "@tanstack/react-query-devtools": "https://aistudiocdn.com/@tanstack/react-query-devtools@^5.45.1",
+    "sonner": "https://aistudiocdn.com/sonner@^1.4.41",
+    "zustand": "https://aistudiocdn.com/zustand@^4.5.2",
+    "zod": "https://aistudiocdn.com/zod@^3.23.8",
+    "@hookform/resolvers/zod": "https://aistudiocdn.com/@hookform/resolvers/zod@^3.6.0",
+    "react-hook-form": "https://aistudiocdn.com/react-hook-form@^7.51.5",
+    "clsx": "https://aistudiocdn.com/clsx@^2.1.1",
+    "tailwind-merge": "https://aistudiocdn.com/tailwind-merge@^2.3.0",
+    "buffer": "https://aistudiocdn.com/buffer@^6.0.3"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-slate-50 antialiased">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
