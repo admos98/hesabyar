@@ -54,13 +54,22 @@ async function updateGistContent(content: AppDatabase): Promise<void> {
 }
 
 // Main API handler - Vercel default export format
-export default async function handler(request: Request) {
+export default async function handler(request: any) {
   if (!GIST_ID || !GITHUB_TOKEN) {
     return new Response(JSON.stringify({ error: 'Server not configured.' }), { status: 500 });
   }
 
   try {
-    const { action, table, payload, id } = await request.json();
+    let body;
+    if (typeof request.body === 'string') {
+      body = JSON.parse(request.body);
+    } else if (request.body instanceof Buffer || request.body instanceof Uint8Array) {
+      body = JSON.parse(Buffer.from(request.body).toString());
+    } else {
+      body = request.body;
+    }
+    
+    const { action, table, payload, id } = body;
     const db = await getGistContent();
 
     switch (action) {

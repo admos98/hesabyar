@@ -17,22 +17,74 @@ async function fileToGenerativePart(buffer: Buffer, mimeType: string) {
     };
 }
 
-// Main API handler - Vercel default export format
-export default async function handler(request: Request) {
+// Main API handler - Vercel default export format  
+export default async function handler(request: any) {
     if (!API_KEY) {
         return new Response(JSON.stringify({ error: "API key not configured." }), { status: 500 });
     }
 
-    try {
-        const formData = await request.formData();
-        const file = formData.get('receipt') as File;
+    if (request.method !== 'POST') {
+        return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405 });
+    }
 
-        if (!file) {
+    try {
+        const contentType = request.headers['content-type'] || '';
+        
+        if (!contentType.includes('multipart/form-data')) {
+            return new Response(JSON.stringify({ error: "Content-Type must be multipart/form-data" }), { status: 400 });
+        }
+
+        // Parse multipart form data manually from buffer
+        const chunks: any[] = [];
+        const reader = request.body.getReader ? request.body.getReader() : null;
+        
+        let bodyBuffer: Buffer;
+        if (reader) {
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                chunks.push(value);
+            }
+            bodyBuffer = Buffer.concat(chunks);
+        } else {
+            bodyBuffer = Buffer.isBuffer(request.body) ? request.body : Buffer.from(request.body);
+        }
+
+        // Extract boundary from content-type
+        const boundaryMatch = contentType.match(/boundary=([^\s;]+)/);
+        if (!boundaryMatch) {
+            return new Response(JSON.stringify({ error: "Invalid multipart format" }), { status: 400 });
+        }
+
+        const boundary = boundaryMatch[1].replace(/"/g, '');
+        const parts = bodyBuffer.toString('binary').split('--' + boundary);
+        
+        let fileBuffer: Buffer | null = null;
+        let fileMimeType = 'image/jpeg';
+
+        for (const part of parts) {
+            if (part.includes('filename=')) {
+                const mimeMatch = part.match(/Content-Type:\s*([^\r\n]+)/);
+                if (mimeMatch) {
+                    fileMimeType = mimeMatch[1].trim();
+                }
+                
+                const headerEnd = part.indexOf('\r\n\r\n');
+                if (headerEnd !== -1) {
+                    const contentStart = headerEnd + 4;
+                    const contentEnd = part.lastIndexOf('\r\n');
+                    const content = part.substring(contentStart, contentEnd);
+                    fileBuffer = Buffer.from(content, 'binary');
+                    break;
+                }
+            }
+        }
+
+        if (!fileBuffer) {
             return new Response(JSON.stringify({ error: "No file uploaded." }), { status: 400 });
         }
 
-        const buffer = Buffer.from(await file.arrayBuffer());
-        const imagePart = await fileToGenerativePart(buffer, file.type);
+        const imagePart = await fileToGenerativePart(fileBuffer, fileMimeType);
 
         const prompt = `
           شما یک دستیار هوشمند برای تحلیل فاکتورهای خرید هستید. لطفا اطلاعات زیر را از تصویر فاکتور استخراج کرده و در قالب یک ساختار JSON دقیق بازگردانید.
@@ -70,7 +122,7 @@ export default async function handler(request: Request) {
             required: ["vendorName", "date", "items"]
         };
 
-        const response: GenerateContentResponse = await ai.models.generateContent({
+        const aiResponse: GenerateContentResponse = await ai.models.generateContent({
           model: 'gemini-2.5-flash',
           contents: { parts: [imagePart, { text: prompt }] },
           config: {
@@ -79,7 +131,7 @@ export default async function handler(request: Request) {
           },
         });
 
-        const jsonText = response.text.trim();
+        const jsonText = aiResponse.text.trim();
         const data = JSON.parse(jsonText);
         return new Response(JSON.stringify(data), { status: 200 });
 
