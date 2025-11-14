@@ -66,7 +66,7 @@ const Purchases: React.FC = () => {
             </div>
 
             <div className="mt-8">{renderContent()}</div>
-            
+
             <VendorModal isOpen={showVendorModal} onClose={handleCloseVendorModal} editingVendor={editingVendor} />
             <PurchaseItemModal isOpen={showPurchaseItemModal} onClose={handleClosePurchaseItemModal} editingPurchaseItem={editingPurchaseItem} />
         </div>

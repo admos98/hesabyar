@@ -63,7 +63,7 @@ const POSSystem: React.FC = () => {
     }
   });
 
-  const categories = useMemo(() => 
+  const categories = useMemo(() =>
     items ? [...new Set(items.map((i: SellableItem) => i.category))].sort() : [],
     [items]
   );
@@ -76,7 +76,7 @@ const POSSystem: React.FC = () => {
     [items, searchTerm, categoryFilter]
   );
 
-  const cartTotal = useMemo(() => 
+  const cartTotal = useMemo(() =>
     cart.reduce((sum, item) => sum + item.total, 0),
     [cart]
   );
@@ -314,7 +314,7 @@ const POSSystem: React.FC = () => {
             <div className="space-y-4">
               <Receipt size={48} className="mx-auto text-primary-500" />
               <h2 className="text-2xl font-bold">رسید فروش</h2>
-              
+
               <div className="border-t dark:border-slate-700 pt-4 text-right space-y-2">
                 <p className="text-sm"><span className="font-semibold">تاریخ:</span> {new Date(lastSale.saleDate).toLocaleDateString('fa-IR')}</p>
                 <p className="text-sm"><span className="font-semibold">ساعت:</span> {new Date(lastSale.saleDate).toLocaleTimeString('fa-IR')}</p>

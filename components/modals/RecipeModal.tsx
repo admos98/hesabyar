@@ -43,7 +43,7 @@ const RecipeModal: React.FC<RecipeModalProps> = ({ isOpen, onClose, recipe }) =>
   });
 
   const saveMutation = useMutation({
-    mutationFn: (data: Partial<Recipe>) => 
+    mutationFn: (data: Partial<Recipe>) =>
       updateRecipe(recipe?.id || '', data),
     onSuccess: () => {
       toast.success('دستور پخت ذخیره شد');

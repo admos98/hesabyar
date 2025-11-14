@@ -49,7 +49,7 @@ const Settings: React.FC = () => {
         const file = e.target.files[0];
         const text = await file.text();
         const data = JSON.parse(text);
-        
+
         // Validate structure
         if (!data.vendors || !data.receipts || !data.sales) {
           throw new Error('فرمت فایل صحیح نیست');
@@ -75,7 +75,7 @@ const Settings: React.FC = () => {
         {/* Business Information */}
         <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-md space-y-4">
           <h2 className="text-xl font-bold mb-4">اطلاعات کسب‌وکار</h2>
-          
+
           <div>
             <label className="block text-sm font-medium mb-1">نام کسب‌وکار</label>
             <input
@@ -136,7 +136,7 @@ const Settings: React.FC = () => {
           {/* Theme */}
           <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-md space-y-4">
             <h2 className="text-xl font-bold mb-4">ظاهر</h2>
-            
+
             <div>
               <label className="block text-sm font-medium mb-1">تم</label>
               <select
@@ -154,7 +154,7 @@ const Settings: React.FC = () => {
           {/* Backup & Restore */}
           <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-md space-y-4">
             <h2 className="text-xl font-bold mb-4">پشتیبان‌گیری و بازیابی</h2>
-            
+
             <button
               onClick={handleExportData}
               className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center justify-center gap-2"

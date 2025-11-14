@@ -34,17 +34,6 @@ const Sales: React.FC = () => {
       setShowRecipeModal(false);
       setEditingRecipe(undefined);
     };
-    
-    const renderContent = () => {
-        switch (activeTab) {
-            case 'menu':
-                return <MenuContent />;
-            case 'recipes':
-                return <RecipesContent />;
-            default:
-                return null;
-        }
-    };
 
     return (
         <div className="space-y-8">
@@ -55,7 +44,7 @@ const Sales: React.FC = () => {
                     <TabButton name="recipes" activeTab={activeTab} setActiveTab={setActiveTab} icon={BookOpen}>دستور پخت</TabButton>
                 </nav>
             </div>
-            
+
             <div className="mt-8">
               {activeTab === 'menu' ? (
                 <MenuContent onEdit={handleEditSellable} onModalOpen={() => setShowSellableModal(true)} />
@@ -106,7 +95,7 @@ const MenuContent = ({ onEdit, onModalOpen }: { onEdit: (item: SellableItem) => 
     }
 
     const categories = items ? [...new Set(items.map(i => i.category))].sort() : [];
-    const filteredItems = items?.filter(item => 
+    const filteredItems = items?.filter(item =>
         item.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
         (!categoryFilter || item.category === categoryFilter)
     ) || [];
@@ -122,7 +111,7 @@ const MenuContent = ({ onEdit, onModalOpen }: { onEdit: (item: SellableItem) => 
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg dark:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
-                    <select 
+                    <select
                         value={categoryFilter}
                         onChange={(e) => setCategoryFilter(e.target.value)}
                         className="px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg dark:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -187,12 +176,12 @@ const MenuContent = ({ onEdit, onModalOpen }: { onEdit: (item: SellableItem) => 
         queryKey: ['sellableItems'],
         queryFn: getSellableItems,
     });
-    
+
     const { data: recipes, isLoading: isLoadingRecipes } = useQuery<Recipe[]>({
         queryKey: ['recipes'],
         queryFn: getRecipes,
     });
-    
+
     const { data: purchaseItems, isLoading: isLoadingPurchase } = useQuery<PurchaseItem[]>({
         queryKey: ['purchaseItems'],
         queryFn: getPurchaseItems,
@@ -203,7 +192,7 @@ const MenuContent = ({ onEdit, onModalOpen }: { onEdit: (item: SellableItem) => 
     const findRecipeForSellableItem = (sellableItemId: string) => {
         return recipes?.find(r => r.sellableItemId === sellableItemId);
     }
-    
+
     const findPurchaseItemName = (purchaseItemId: string) => {
         return purchaseItems?.find(p => p.id === purchaseItemId)?.name ?? 'نامعلوم';
     }
@@ -225,7 +214,7 @@ const MenuContent = ({ onEdit, onModalOpen }: { onEdit: (item: SellableItem) => 
                         const recipe = findRecipeForSellableItem(item.id);
                         const isExpanded = expandedRecipe === item.id;
                         const hasIngredients = recipe && recipe.ingredients.length > 0;
-                        
+
                         return (
                             <div key={item.id} className="bg-white dark:bg-slate-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-slate-200 dark:border-slate-700">
                                 <button

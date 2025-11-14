@@ -85,7 +85,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <SidebarContent />
         </div>
       </div>
-      
+
       <div className="flex flex-col md:pr-64">
         <header className="sticky top-0 z-10 flex items-center justify-between h-16 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm shadow-sm md:justify-end px-4 sm:px-6 lg:px-8">
           <button

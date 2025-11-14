@@ -15,7 +15,7 @@ interface SellableItemModalProps {
 
 const SellableItemModal: React.FC<SellableItemModalProps> = ({ isOpen, onClose, editingItem }) => {
   const queryClient = useQueryClient();
-  
+
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm({
     resolver: zodResolver(sellableItemSchema),
     defaultValues: editingItem || { name: '', price: 0, category: '' }
@@ -32,7 +32,7 @@ const SellableItemModal: React.FC<SellableItemModalProps> = ({ isOpen, onClose, 
   }, [editingItem, isOpen, setValue, reset]);
 
   const saveMutation = useMutation({
-    mutationFn: (data: any) => 
+    mutationFn: (data: any) =>
       editingItem ? updateSellableItem(editingItem.id, data) : createSellableItem(data),
     onSuccess: () => {
       toast.success(editingItem ? 'آیتم فروشی به‌روز شد' : 'آیتم فروشی اضافه شد');

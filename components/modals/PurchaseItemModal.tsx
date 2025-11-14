@@ -15,7 +15,7 @@ interface PurchaseItemModalProps {
 
 const PurchaseItemModal: React.FC<PurchaseItemModalProps> = ({ isOpen, onClose, editingItem }) => {
   const queryClient = useQueryClient();
-  
+
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm({
     resolver: zodResolver(purchaseItemSchema),
     defaultValues: editingItem || { name: '', category: '', unit: PurchaseItemUnit.Kilogram, minStockThreshold: 0 }
@@ -33,7 +33,7 @@ const PurchaseItemModal: React.FC<PurchaseItemModalProps> = ({ isOpen, onClose, 
   }, [editingItem, isOpen, setValue, reset]);
 
   const saveMutation = useMutation({
-    mutationFn: (data: any) => 
+    mutationFn: (data: any) =>
       editingItem ? updatePurchaseItem(editingItem.id, data) : createPurchaseItem(data),
     onSuccess: () => {
       toast.success(editingItem ? 'قلم خرید به‌روز شد' : 'قلم خرید اضافه شد');

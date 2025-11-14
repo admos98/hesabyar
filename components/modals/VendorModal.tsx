@@ -15,7 +15,7 @@ interface VendorModalProps {
 
 const VendorModal: React.FC<VendorModalProps> = ({ isOpen, onClose, editingVendor }) => {
   const queryClient = useQueryClient();
-  
+
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm({
     resolver: zodResolver(vendorSchema),
     defaultValues: editingVendor || { name: '', contactPerson: '', phone: '', address: '' }
@@ -33,7 +33,7 @@ const VendorModal: React.FC<VendorModalProps> = ({ isOpen, onClose, editingVendo
   }, [editingVendor, isOpen, setValue, reset]);
 
   const saveMutation = useMutation({
-    mutationFn: (data: any) => 
+    mutationFn: (data: any) =>
       editingVendor ? updateVendor(editingVendor.id, data) : createVendor(data),
     onSuccess: () => {
       toast.success(editingVendor ? 'فروشنده به‌روز شد' : 'فروشنده اضافه شد');
