@@ -11,18 +11,44 @@ import {
   getReceipts, createReceipt
 } from '../lib/api';
 import { vendorSchema, purchaseItemSchema, Vendor, PurchaseItem } from '../types';
+import VendorModal from './modals/VendorModal';
+import PurchaseItemModal from './modals/PurchaseItemModal';
 
 const Purchases: React.FC = () => {
     const [activeTab, setActiveTab] = useState('receipts');
+    const [showVendorModal, setShowVendorModal] = useState(false);
+    const [editingVendor, setEditingVendor] = useState<Vendor | undefined>();
+    const [showPurchaseItemModal, setShowPurchaseItemModal] = useState(false);
+    const [editingPurchaseItem, setEditingPurchaseItem] = useState<PurchaseItem | undefined>();
+
+    const handleEditVendor = (vendor: Vendor) => {
+      setEditingVendor(vendor);
+      setShowVendorModal(true);
+    };
+
+    const handleEditPurchaseItem = (item: PurchaseItem) => {
+      setEditingPurchaseItem(item);
+      setShowPurchaseItemModal(true);
+    };
+
+    const handleCloseVendorModal = () => {
+      setShowVendorModal(false);
+      setEditingVendor(undefined);
+    };
+
+    const handleClosePurchaseItemModal = () => {
+      setShowPurchaseItemModal(false);
+      setEditingPurchaseItem(undefined);
+    };
 
     const renderContent = () => {
         switch (activeTab) {
             case 'receipts':
                 return <ReceiptsContent />;
             case 'vendors':
-                return <VendorsContent />;
+                return <VendorsContent onEdit={handleEditVendor} onModalOpen={() => setShowVendorModal(true)} />;
             case 'items':
-                return <PurchaseItemsContent />;
+                return <PurchaseItemsContent onEdit={handleEditPurchaseItem} onModalOpen={() => setShowPurchaseItemModal(true)} />;
             default:
                 return null;
         }
@@ -40,6 +66,9 @@ const Purchases: React.FC = () => {
             </div>
 
             <div className="mt-8">{renderContent()}</div>
+            
+            <VendorModal isOpen={showVendorModal} onClose={handleCloseVendorModal} editingVendor={editingVendor} />
+            <PurchaseItemModal isOpen={showPurchaseItemModal} onClose={handleClosePurchaseItemModal} editingPurchaseItem={editingPurchaseItem} />
         </div>
     );
 };
@@ -251,7 +280,7 @@ const OcrResultForm = ({ result, onCancel }: { result: any, onCancel: () => void
 };
 
 // --- Vendors Tab Content ---
-const VendorsContent: React.FC = () => {
+const VendorsContent: React.FC<{ onEdit: (vendor: Vendor) => void, onModalOpen: () => void }> = ({ onEdit, onModalOpen }) => {
     const queryClient = useQueryClient();
     const { data: vendors, isLoading } = useQuery({
         queryKey: ['vendors'],
@@ -279,7 +308,7 @@ const VendorsContent: React.FC = () => {
         <div className="space-y-4">
             <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-semibold">مدیریت فروشندگان</h2>
-                <button className="flex items-center gap-2 px-4 py-2 text-white rounded-lg bg-primary-500 hover:bg-primary-600">
+                <button onClick={onModalOpen} className="flex items-center gap-2 px-4 py-2 text-white rounded-lg bg-primary-500 hover:bg-primary-600">
                     <PlusCircle size={20} />
                     <span>فروشنده جدید</span>
                 </button>
@@ -302,7 +331,7 @@ const VendorsContent: React.FC = () => {
                                     <td className="px-6 py-4 font-medium">{vendor.name}</td>
                                     <td className="px-6 py-4">{vendor.phone || '-'}</td>
                                     <td className="px-6 py-4 flex gap-4">
-                                        <button><Edit className="w-5 h-5 text-blue-500 hover:text-blue-700"/></button>
+                                        <button onClick={() => onEdit(vendor)}><Edit className="w-5 h-5 text-blue-500 hover:text-blue-700"/></button>
                                         <button onClick={() => handleDelete(vendor.id)} disabled={deleteMutation.isPending}><Trash2 className="w-5 h-5 text-red-500 hover:text-red-700"/></button>
                                     </td>
                                 </tr>
@@ -318,7 +347,7 @@ const VendorsContent: React.FC = () => {
 };
 
 // --- Purchase Items Tab Content ---
-const PurchaseItemsContent: React.FC = () => {
+const PurchaseItemsContent: React.FC<{ onEdit: (item: PurchaseItem) => void, onModalOpen: () => void }> = ({ onEdit, onModalOpen }) => {
     const queryClient = useQueryClient();
     const { data: items, isLoading } = useQuery({
         queryKey: ['purchaseItems'],
@@ -346,7 +375,7 @@ const PurchaseItemsContent: React.FC = () => {
         <div className="space-y-4">
             <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-semibold">مدیریت اقلام خرید</h2>
-                <button className="flex items-center gap-2 px-4 py-2 text-white rounded-lg bg-primary-500 hover:bg-primary-600">
+                <button onClick={onModalOpen} className="flex items-center gap-2 px-4 py-2 text-white rounded-lg bg-primary-500 hover:bg-primary-600">
                     <PlusCircle size={20} />
                     <span>قلم جدید</span>
                 </button>
@@ -373,7 +402,7 @@ const PurchaseItemsContent: React.FC = () => {
                                     <td className="px-6 py-4">{item.unit}</td>
                                     <td className="px-6 py-4">{item.minStockThreshold}</td>
                                     <td className="px-6 py-4 flex gap-4">
-                                        <button><Edit className="w-5 h-5 text-blue-500 hover:text-blue-700"/></button>
+                                        <button onClick={() => onEdit(item)}><Edit className="w-5 h-5 text-blue-500 hover:text-blue-700"/></button>
                                         <button onClick={() => handleDelete(item.id)} disabled={deleteMutation.isPending}><Trash2 className="w-5 h-5 text-red-500 hover:text-red-700"/></button>
                                     </td>
                                 </tr>

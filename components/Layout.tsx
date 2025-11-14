@@ -8,6 +8,7 @@ const navigation = [
   { name: 'بخش فروش', href: '/sales', icon: Utensils },
   { name: 'مدیریت موجودی', href: '/inventory', icon: Package },
   { name: 'گزارشات', href: '/reports', icon: BarChart2 },
+  { name: 'تنظیمات', href: '/settings', icon: Settings },
 ];
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {

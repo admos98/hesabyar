@@ -5,9 +5,35 @@ import { toast } from 'sonner';
 import { getSellableItems, deleteSellableItem, getRecipes, getPurchaseItems } from '../lib/api';
 import { SellableItem, Recipe, PurchaseItem } from '../types';
 import { formatToman } from '../lib/utils';
+import SellableItemModal from './modals/SellableItemModal';
+import RecipeModal from './modals/RecipeModal';
 
 const Sales: React.FC = () => {
     const [activeTab, setActiveTab] = useState('menu');
+    const [showSellableModal, setShowSellableModal] = useState(false);
+    const [editingSellable, setEditingSellable] = useState<SellableItem | undefined>();
+    const [showRecipeModal, setShowRecipeModal] = useState(false);
+    const [editingRecipe, setEditingRecipe] = useState<Recipe | undefined>();
+
+    const handleEditSellable = (item: SellableItem) => {
+      setEditingSellable(item);
+      setShowSellableModal(true);
+    };
+
+    const handleEditRecipe = (recipe: Recipe) => {
+      setEditingRecipe(recipe);
+      setShowRecipeModal(true);
+    };
+
+    const handleCloseSellableModal = () => {
+      setShowSellableModal(false);
+      setEditingSellable(undefined);
+    };
+
+    const handleCloseRecipeModal = () => {
+      setShowRecipeModal(false);
+      setEditingRecipe(undefined);
+    };
     
     const renderContent = () => {
         switch (activeTab) {
@@ -30,7 +56,16 @@ const Sales: React.FC = () => {
                 </nav>
             </div>
             
-            <div className="mt-8">{renderContent()}</div>
+            <div className="mt-8">
+              {activeTab === 'menu' ? (
+                <MenuContent onEdit={handleEditSellable} onModalOpen={() => setShowSellableModal(true)} />
+              ) : (
+                <RecipesContent onEdit={handleEditRecipe} onModalOpen={() => setShowRecipeModal(true)} />
+              )}
+            </div>
+
+            <SellableItemModal isOpen={showSellableModal} onClose={handleCloseSellableModal} editingItem={editingSellable} />
+            <RecipeModal isOpen={showRecipeModal} onClose={handleCloseRecipeModal} recipe={editingRecipe} />
         </div>
     );
 };
@@ -43,7 +78,7 @@ const TabButton: React.FC<{name: string, activeTab: string, setActiveTab: (name:
 );
 
 
-const MenuContent = () => {
+const MenuContent = ({ onEdit, onModalOpen }: { onEdit: (item: SellableItem) => void, onModalOpen: () => void }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [categoryFilter, setCategoryFilter] = useState('');
 
@@ -98,7 +133,7 @@ const MenuContent = () => {
                         ))}
                     </select>
                 </div>
-                <button className="flex items-center gap-2 px-4 py-2 text-white rounded-lg bg-primary-500 hover:bg-primary-600 transition-colors whitespace-nowrap">
+                <button onClick={onModalOpen} className="flex items-center gap-2 px-4 py-2 text-white rounded-lg bg-primary-500 hover:bg-primary-600 transition-colors whitespace-nowrap">
                     <PlusCircle size={20} />
                     <span>آیتم جدید</span>
                 </button>
@@ -124,7 +159,7 @@ const MenuContent = () => {
                                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{item.category}</p>
                                 </div>
                                 <div className="flex gap-2 ml-2">
-                                    <button className="p-1 hover:bg-blue-50 dark:hover:bg-slate-700 rounded">
+                                    <button onClick={() => onEdit(item)} className="p-1 hover:bg-blue-50 dark:hover:bg-slate-700 rounded">
                                         <Edit className="w-5 h-5 text-blue-500 hover:text-blue-700"/>
                                     </button>
                                     <button onClick={() => handleDelete(item.id)} disabled={deleteMutation.isPending} className="p-1 hover:bg-red-50 dark:hover:bg-slate-700 rounded">
@@ -146,7 +181,6 @@ const MenuContent = () => {
     );
 };
 
-const RecipesContent = () => {
     const [expandedRecipe, setExpandedRecipe] = useState<string | null>(null);
 
     const { data: sellableItems, isLoading: isLoadingSellable } = useQuery<SellableItem[]>({
@@ -176,7 +210,13 @@ const RecipesContent = () => {
 
     return (
         <div className="space-y-4">
-            <h2 className="text-2xl font-semibold">مدیریت دستور پخت</h2>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-semibold">مدیریت دستور پخت</h2>
+              <button onClick={onModalOpen} disabled={!sellableItems || sellableItems.length === 0} className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 disabled:bg-gray-400 flex items-center gap-2">
+                <PlusCircle size={18} />
+                دستور جدید
+              </button>
+            </div>
             {isLoading ? (
                 <div className="text-center p-8"><Loader2 className="inline animate-spin"/></div>
             ) : (
@@ -221,18 +261,21 @@ const RecipesContent = () => {
                                                                 <p className="font-medium text-sm text-gray-900 dark:text-white">{findPurchaseItemName(ing.purchaseItemId)}</p>
                                                                 <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">{ing.quantity} واحد</p>
                                                             </div>
-                                                            <button className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 p-1 hover:bg-blue-50 dark:hover:bg-slate-700 rounded">
+                                                            <button onClick={() => recipe && onEdit(recipe)} className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 p-1 hover:bg-blue-50 dark:hover:bg-slate-700 rounded">
                                                                 <Edit className="w-4 h-4" />
                                                             </button>
                                                         </div>
                                                     ))}
                                                 </div>
+                                                <button onClick={() => recipe && onEdit(recipe)} className="w-full mt-3 px-4 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                                                  ویرایش دستور
+                                                </button>
                                             </div>
                                         ) : (
                                             <div className="text-center py-8">
                                                 <Package className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3 opacity-50" />
                                                 <p className="text-slate-600 dark:text-slate-400 mb-4 font-medium">دستور پختی برای این آیتم ثبت نشده است.</p>
-                                                <button className="px-4 py-2 text-sm bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors">
+                                                <button onClick={onModalOpen} className="px-4 py-2 text-sm bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors">
                                                     <span>اضافه کردن مواد</span>
                                                 </button>
                                             </div>
@@ -246,6 +289,5 @@ const RecipesContent = () => {
             )}
         </div>
     );
-};
 
 export default Sales;

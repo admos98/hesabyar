@@ -9,7 +9,8 @@ import Purchases from './components/Purchases';
 import Sales from './components/Sales';
 import Inventory from './components/Inventory';
 import Reports from './components/Reports';
-import POS from './components/POS';
+import POSSystem from './components/POS-Enhanced';
+import Settings from './components/Settings';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,7 +32,8 @@ function App() {
             <Route path="/sales" element={<Sales />} />
             <Route path="/inventory" element={<Inventory />} />
             <Route path="/reports" element={<Reports />} />
-            <Route path="/pos" element={<POS />} />
+            <Route path="/pos" element={<POSSystem />} />
+            <Route path="/settings" element={<Settings />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </Layout>
